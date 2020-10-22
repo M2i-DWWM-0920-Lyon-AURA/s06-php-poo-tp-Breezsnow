@@ -1,11 +1,29 @@
 <?php
 
+require_once './class/developer.class.php';
+require_once './class/game.class.php';
+require_once './class/platform.class.php';
+
+
+
 $dbh = new PDO('mysql:host=localhost;dbname=videogames', 'root', 'root');
 
-$stmt = $dbh->query('SELECT * FROM `game` WHERE `id` = 2');
-$result = $stmt->fetchall();
 
-var_dump($result)
+
+$developers = fetchAllDevelopers();
+$games = fetchAllGames();
+$platforms = fetchAllPlatforms();
+
+
+
+
+// if (isset($_GET['title']) && isset($_GET['link']) && isset($_GET['release_date']) && isset($_GET['developer']) && isset($_GET['platform']) && (isset($_GET['id']))
+// {
+//     $addedGame = 'title','link','release_date','developer','platform','id';
+//     $addedGame->create();
+   
+// }
+
 
 
 ?>
@@ -13,12 +31,15 @@ var_dump($result)
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" rel="stylesheet" />
+
 <body>
     <div class="container">
         <div class="card text-center">
@@ -39,17 +60,19 @@ var_dump($result)
                     </tr>
                 </thead>
                 <tbody>
+                    <?php foreach ($games as $game): ?>
                     <tr>
-                        <th scope="row">1</th>
+                        <th scope="row"><?= $game->getId() ?></th>
                         <td>
-                            <a href="https://en.wikipedia.org/wiki/Populous_(video_game)">Populous</a>
+                            <a href="<?= $game->getLink() ?>"><?= $game->getTitle() ?></a>
                         </td>
-                        <td>5 june 1989</td>
+                        <td><?= $game->getRelease_date() ?></td>
                         <td>
-                            <a href="https://en.wikipedia.org/wiki/Bullfrog_Productions">Bullfrog Productions</a>
+                            <a
+                                href="<?= $game->getDeveloper()->getLink() ?>"><?= $game->getDeveloper()->getName() ?></a>
                         </td>
                         <td>
-                            <a href="https://en.wikipedia.org/wiki/Amiga">Amiga</a>
+                            <a href="<?= $game->getPlatform()->getLink() ?>"><?= $game->getPlatform()->getName() ?></a>
                         </td>
                         <td>
                             <button class="btn btn-primary btn-sm">
@@ -62,29 +85,7 @@ var_dump($result)
                             </button>
                         </td>
                     </tr>
-                    <tr>
-                        <th scope="row">2</th>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/Populous_(video_game)">Doom</a>
-                        </td>
-                        <td>10 December 1993</td>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/Bullfrog_Productions">id Software</a>
-                        </td>
-                        <td>
-                            <a href="https://en.wikipedia.org/wiki/MS-DOS">MS-DOS</a>
-                        </td>
-                        <td>
-                            <button class="btn btn-primary btn-sm">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                        </td>
-                        <td>
-                            <button class="btn btn-danger btn-sm">
-                                <i class="fas fa-trash-alt"></i>
-                            </button>
-                        </td>
-                    </tr>
+                    <?php endforeach; ?>
                     <form>
                         <tr>
                             <th scope="row"></th>
@@ -98,18 +99,21 @@ var_dump($result)
                             </td>
                             <td>
                                 <select name="developer">
-                                    <option value="1">Bullfrog Productions</option>
-                                    <option value="2">id Software</option>
+                                    <?php foreach($developers as $developer): ?>
+                                    <option value="<?=$developer->getId()?>"><?=$developer->getName()?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </td>
                             <td>
                                 <select name="platform">
-                                    <option value="1">SNES</option>
-                                    <option value="2">MS-DOS</option>
+                                    <?php foreach($platforms as $platform): ?>
+                                    <option value="<?=$platform->getId()?>"><?=$platform->getName()?></option>
+                                    <?php endforeach; ?>
                                 </select>
                             </td>
                             <td>
-                                <button type="submit" class="btn btn-success btn-sm">
+                                <button type="submit" name="id" value="<?=$game->getId()?>"
+                                    class="btn btn-success btn-sm">
                                     <i class="fas fa-plus"></i>
                                 </button>
                             </td>
@@ -128,4 +132,5 @@ var_dump($result)
         </div>
     </div>
 </body>
+
 </html>
