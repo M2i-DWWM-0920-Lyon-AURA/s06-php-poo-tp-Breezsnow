@@ -1,3 +1,16 @@
+<?php
+
+$dbh = new PDO('mysql:host=localhost;dbname=videogames', 'root', 'root');
+
+$stmt = $dbh->query('SELECT * FROM `game` WHERE `id` = 2');
+$result = $stmt->fetchall();
+
+var_dump($result)
+
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
